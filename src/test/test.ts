@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { get, all } from "../lib/abstraction";
+import { run, get, all } from "../lib/abstraction";
 
 (async () => {
     try {
@@ -9,8 +9,8 @@ import { get, all } from "../lib/abstraction";
                 throw err;
             }
         });
-        const stmt = db.prepare(`SELECT * FROM archivo`);
-        const results = await all(stmt, null);
+        const stmt = db.prepare(`UPDATE usuario SET esCCobrar=?`);
+        const results = await get(stmt, [1]);
         console.log(results);
     } catch (error: any) {
         console.error(error);
