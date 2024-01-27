@@ -7,10 +7,10 @@ type PromiseResponse = {
 }
 
 export function bind(stmt: Statement, params: (string | number)[]): Statement {
-        const bindQuery = stmt.bind(params, (err: any) => {
-            if (err) throw err;
-        });
-        return bindQuery;
+    const bindQuery = stmt.bind(params, (err: any) => {
+        if (err) throw err;
+    });
+    return bindQuery;
 }
 
 export function get(stmt: Statement, params: (string | number)[] | null): Promise<PromiseResponse> {
@@ -113,5 +113,18 @@ export function run(stmt: Statement, params: (string | number)[] | null): Promis
                 });
             });
         }
+    });
+}
+
+export function finalize(stmt: Statement): Promise<PromiseResponse> {
+    return new Promise((resolve, reject) => {
+        stmt.finalize((err) => {
+            if (err) throw err;
+            resolve({
+                status: true,
+                message: "Statement finalized",
+                content: {}
+            })
+        })
     });
 }
