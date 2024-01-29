@@ -1,9 +1,38 @@
-import { Statement } from "sqlite3";
+import { Statement, Database } from "sqlite3";
 
 type PromiseResponse = {
     status: boolean,
     message: string,
     content: object[] | object
+}
+
+type PromiseResponseStatement = {
+    status: boolean,
+    message: string, 
+    stmt: Statement
+}
+
+export function database(file: string): Promise<Database> {
+    return new Promise((resolve, reject) => {
+        resolve(new Database(file, (err) => {if (err) throw err;}));
+    });
+}
+
+export function prepare(db: Database, query: string): Promise<PromiseResponseStatement> {
+    return new Promise((resolve, reject) => {
+        const stmt = db.prepare(query, (err: Error) => {
+            if (err) return reject({
+                status: false, 
+                message: `Something went wrong while preparing the statement: ${err}`,
+                content: {}
+            });
+        })
+        resolve({
+            status: true,
+            message: "Statemen prepared correctly!",
+            stmt: stmt
+        });
+    });
 }
 
 export function bind(stmt: Statement, params: (string | number)[]): Statement {
